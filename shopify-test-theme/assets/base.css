@@ -2564,6 +2564,14 @@ input[type='checkbox'] {
   margin-right: -1.2rem;
 }
 
+.header__icon--wishlist {
+  position: relative;
+}
+.wishlist-btn {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 .header__icon--menu[aria-expanded='true']::before {
   content: '';
   top: 100%;

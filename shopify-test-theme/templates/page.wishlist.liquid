@@ -1,0 +1,77 @@
+<div class="page-width">
+  <h1
+    class="main-page-title page-title h0{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+    {{ page.title | escape }}
+  </h1>
+  <ul id="product-grid" class="grid product-grid grid--2-col-tablet-down grid--4-col-desktop"></ul>
+  <div class="rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    {{ page.content }}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const wishlistItemsContainer = document.getElementById('product-grid');
+
+    function loadWishlist() {
+      const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const storeDomain = 'https://0avy01-un.myshopify.com';
+
+      wishlistItemsContainer.innerHTML = '';
+
+      if (wishlist.length === 0) {
+        wishlistItemsContainer.innerHTML = '<p>Список желаемого пуст.</p>';
+        return;
+      }
+
+      wishlist.forEach(productHandle => {
+        if (isLocalhost) {
+          wishlistItemsContainer.innerHTML += `
+            <div>
+              <h3>Товар: ${productHandle}</h3>
+            </div>
+          `;
+        } else {
+          fetch(`${storeDomain}/products/${productHandle}.js`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(product => {
+              wishlistItemsContainer.innerHTML += `
+                <li class="grid__item">
+                  <a href="${product.url}">
+                    <img src="${product.featured_image}" alt="${product.title}" style="max-width: 100px;">
+                    <h3 class="card__heading h5">${product.title}</h3>
+                  </a>
+                  <button class="wishlist-btn wishlist-delete-btn button button--full-width button--secondary" data-product-handle="${product.handle}">Видалити з бажаного</button>
+                </li>
+              `;
+            })
+            .catch(error => {
+              console.error(`Ошибка при загрузке товара ${productHandle}:`, error);
+              wishlistItemsContainer.innerHTML += `<div><p>Товар ${productHandle} не найден.</p></div>`;
+            });
+        }
+      });
+    }
+
+    loadWishlist();
+
+    wishlistItemsContainer.addEventListener('click', function (event) {
+      if (event.target.classList.contains('wishlist-delete-btn')) {
+        const productHandleToRemove = event.target.dataset.productHandle;
+        let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+        wishlist = wishlist.filter(handle => handle !== productHandleToRemove);
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+
+        loadWishlist();
+        updateCountWhishlist();
+      }
+    });
+  });
+</script>

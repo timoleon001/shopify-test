@@ -439,6 +439,7 @@
                       {%- endif -%}
                     </volume-pricing>
                   {%- endif -%}
+                  <button class="wishlist-btn button button--full-width button--secondary" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}">Додати до бажаного</button>
                 </div>
               {%- when 'popup' -%}
                 <modal-opener
@@ -1674,7 +1675,7 @@
         {
           "type": "header",
           "content": "t:sections.main-product.blocks.icon_with_text.settings.pairing_2.label"
-        },        
+        },
         {
           "type": "select",
           "id": "icon_2",
@@ -1874,7 +1875,7 @@
         {
           "type": "header",
           "content": "t:sections.main-product.blocks.icon_with_text.settings.pairing_3.label"
-        },        
+        },
         {
           "type": "select",
           "id": "icon_3",
@@ -2176,7 +2177,7 @@
       ],
       "default": "hide",
       "label": "t:sections.main-product.settings.mobile_thumbnails.label"
-    },    
+    },
     {
       "type": "select",
       "id": "media_position",
